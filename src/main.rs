@@ -23,7 +23,7 @@ pub const ARENA_HEIGHT: u32 = 10;
 fn main() {
 	App::new()
 		.insert_resource(WindowDescriptor {
-			title: "snake".to_string(),
+			title: env!("CARGO_PKG_NAME").to_string(),
 			width: 640.0,
 			height: 640.0, // TODO: Shows weird when resizing window
 			..default()
