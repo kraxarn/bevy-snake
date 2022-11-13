@@ -26,6 +26,7 @@ pub fn food_spawner(
 	let positions = entities.iter().collect::<Vec<&Position>>();
 	let mut position = random_position();
 	while positions.contains(&&position) {
+		// TODO: Infinite loop when nowhere to spawn
 		position = random_position();
 	}
 
