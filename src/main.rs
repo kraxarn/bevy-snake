@@ -5,8 +5,9 @@ use bevy::prelude::*;
 use bevy::time::FixedTimestep;
 use bevy::utils::default;
 use bevy::window::{WindowDescriptor, Windows};
-use crate::food::food_spawner;
 
+use crate::area::{AREA_HEIGHT, AREA_WIDTH, resize_area_background, spawn_area_background};
+use crate::food::food_spawner;
 use crate::snake::{DieEvent, EatEvent, LastTailPosition, snake_die, snake_eat, snake_eating, snake_movement, snake_movement_input, spawn_snake};
 use crate::snake_segment::SnakeSegments;
 
@@ -14,11 +15,9 @@ mod snake;
 mod food;
 mod direction;
 mod snake_segment;
+mod area;
 
 const CLEAR_COLOR: Color = Color::rgb(0.04, 0.04, 0.04);
-
-pub const ARENA_WIDTH: u32 = 10;
-pub const ARENA_HEIGHT: u32 = 10;
 
 fn main() {
 	App::new()
@@ -31,8 +30,10 @@ fn main() {
 		.insert_resource(ClearColor(CLEAR_COLOR))
 		.insert_resource(SnakeSegments::default()) // TODO: In snake?
 		.insert_resource(LastTailPosition::default()) // TODO: In snake?
+		.add_startup_system(spawn_area_background)
 		.add_startup_system(setup_camera)
 		.add_startup_system(spawn_snake)
+		.add_system(resize_area_background)
 		.add_system(snake_movement_input.before(snake_movement))
 		.add_system_set_to_stage(CoreStage::PostUpdate,
 			SystemSet::new()
@@ -90,9 +91,10 @@ impl Size {
 fn size_scaling(windows: Res<Windows>, mut query: Query<(&Size, &mut Transform)>) {
 	if let Some(window) = windows.get_primary() {
 		for (sprite_size, mut transform) in &mut query {
-			let x = sprite_size.width / ARENA_WIDTH as f32 * window.width() as f32;
-			let y = sprite_size.height / ARENA_HEIGHT as f32 * window.height() as f32;
-			transform.scale = Vec3::new(x, y, 1.0);
+			let x = sprite_size.width / AREA_WIDTH as f32 * window.width() as f32;
+			let y = sprite_size.height / AREA_HEIGHT as f32 * window.height() as f32;
+			let size = x.min(y);
+			transform.scale = Vec3::new(size, size, 1.0);
 		}
 	}
 }
@@ -105,9 +107,10 @@ fn position_translate(windows: Res<Windows>, mut query: Query<(&Position, &mut T
 
 	if let Some(window) = windows.get_primary() {
 		for (pos, mut transform) in &mut query {
-			let x = convert(pos.x as f32, window.width() as f32, ARENA_WIDTH as f32);
-			let y = convert(pos.y as f32, window.height() as f32, ARENA_HEIGHT as f32);
-			transform.translation = Vec3::new(x, y, 0.0);
+			let window_size = window.width().min(window.height());
+			let x = convert(pos.x as f32, window_size, AREA_WIDTH as f32);
+			let y = convert(pos.y as f32, window_size, AREA_HEIGHT as f32);
+			transform.translation = Vec3::new(x, y, 1.0);
 		}
 	}
 }

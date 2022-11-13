@@ -1,6 +1,8 @@
 use bevy::input::Input;
 use bevy::prelude::{Color, Commands, Component, default, Entity, EventReader, EventWriter, KeyCode, Or, Query, Res, ResMut, Sprite, SpriteBundle, With};
-use crate::{ARENA_HEIGHT, ARENA_WIDTH, Position, Size};
+
+use crate::{Position, Size};
+use crate::area::{AREA_HEIGHT, AREA_WIDTH};
 use crate::direction::Direction;
 use crate::food::Food;
 use crate::snake_segment::{SnakeSegment, SnakeSegments, spawn_segment};
@@ -97,8 +99,8 @@ pub fn snake_movement(
 		};
 
 		if head_position.x < 0 || head_position.y < 0
-			|| head_position.x as u32 >= ARENA_WIDTH
-			|| head_position.y as u32 >= ARENA_HEIGHT
+			|| head_position.x as u32 >= AREA_WIDTH
+			|| head_position.y as u32 >= AREA_HEIGHT
 		{
 			die_writer.send(DieEvent);
 		}
