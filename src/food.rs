@@ -1,10 +1,11 @@
-use bevy::prelude::{Color, Commands, Component, Or, Query, With};
+use bevy::prelude::{Color, Commands, Component, EventReader, Or, Query, With};
 use bevy::sprite::{Sprite, SpriteBundle};
 use bevy::utils::default;
 use rand::random;
 
 use crate::{Position, Size};
 use crate::area::{AREA_HEIGHT, AREA_WIDTH};
+use crate::snake::EatEvent;
 use crate::snake_segment::SnakeSegment;
 
 const FOOD_COLOR: Color = Color::rgb(1.0, 0.0, 0.0);
@@ -19,10 +20,16 @@ fn random_position() -> Position {
 	}
 }
 
-pub fn food_spawner(
+pub fn spawn_food(
 	mut commands: Commands,
+	eat_event: EventReader<EatEvent>,
 	entities: Query<&Position, Or<(With<Food>, With<SnakeSegment>)>>,
+	foods: Query<With<Food>>,
 ) {
+	if eat_event.is_empty() && !foods.is_empty() {
+		return;
+	}
+
 	let positions = entities.iter().collect::<Vec<&Position>>();
 	let mut position = random_position();
 	while positions.contains(&&position) {

@@ -7,7 +7,7 @@ use bevy::utils::default;
 use bevy::window::{WindowDescriptor, Windows};
 
 use crate::area::{AREA_HEIGHT, AREA_WIDTH, resize_area_background, spawn_area_background};
-use crate::food::food_spawner;
+use crate::food::spawn_food;
 use crate::snake::{DieEvent, EatEvent, LastTailPosition, snake_die, snake_eat, snake_eating, snake_movement, snake_movement_input, spawn_snake};
 use crate::snake_segment::SnakeSegments;
 
@@ -44,10 +44,8 @@ fn main() {
 			.with_system(snake_movement)
 			.with_system(snake_eating.after(snake_movement))
 			.with_system(snake_die.after(snake_movement))
-			.with_system(snake_eat.after(snake_eating)))
-		.add_system_set(SystemSet::new()
-			.with_run_criteria(FixedTimestep::step(1.0))
-			.with_system(food_spawner)) // TODO: Spawn new when collected instead
+			.with_system(snake_eat.after(snake_eating))
+			.with_system(spawn_food.after(snake_eat)))
 		.add_event::<EatEvent>()
 		.add_event::<DieEvent>()
 		.add_plugins(DefaultPlugins)
