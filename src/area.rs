@@ -33,8 +33,8 @@ pub fn resize_area_background(
 	mut area_backgrounds: Query<&mut Transform, With<AreaBackground>>
 ) {
 	if let Some(window) = windows.get_primary() {
+		let size = window.width().min(window.height());
 		for mut area_background in &mut area_backgrounds {
-			let size = window.width().min(window.height());
 			area_background.scale = Vec3::new(size, size, 0.0);
 		}
 	}
