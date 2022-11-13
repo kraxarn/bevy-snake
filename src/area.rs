@@ -20,7 +20,7 @@ pub fn spawn_area_background(mut commands: Commands) {
 				..default()
 			},
 			transform: Transform {
-				scale: Vec3::new(64.0, 64.0, 1.0),
+				scale: Vec3::new(0.0, 0.0, 0.0),
 				..default()
 			},
 			..default()
