@@ -24,7 +24,7 @@ fn main() {
 		.insert_resource(WindowDescriptor {
 			title: env!("CARGO_PKG_NAME").to_string(),
 			width: 640.0,
-			height: 640.0, // TODO: Shows weird when resizing window
+			height: 640.0,
 			..default()
 		})
 		.insert_resource(ClearColor(CLEAR_COLOR))
